@@ -28,8 +28,7 @@ export class AuthService {
   async signIn(credential: LoginDto) {
     const { email, password } = credential;
     const user = await this.userService.findOne(email);
-
-    if (!this.comparePassword(password, user.password)) {
+    if (!(await this.comparePassword(password, user.password))) {
       throw new UnauthorizedException();
     }
 

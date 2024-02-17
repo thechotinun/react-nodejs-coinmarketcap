@@ -4,7 +4,7 @@ import { OauthUser } from './o-auth-user.entity';
 
 @Entity('users')
 export class User extends BaseEntity {
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({ type: 'varchar', length: 100, nullable: false, unique: true })
   email: string;
 
   @Column({ type: 'varchar', nullable: false })

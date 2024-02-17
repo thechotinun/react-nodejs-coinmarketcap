@@ -32,4 +32,12 @@ export class UserException extends ApiException {
   static updateError(error?: string[]): ApiException {
     throw new ApiException(100204, error);
   }
+
+  /**
+   * @param error
+   * @returns ApiException
+   */
+  static existError(error?: string[]): ApiException {
+    throw new ApiException(100205, error);
+  }
 }

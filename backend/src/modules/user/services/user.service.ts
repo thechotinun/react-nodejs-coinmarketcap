@@ -34,6 +34,14 @@ export class UserService {
 
   async create(payload: CreateUserDto): Promise<User> {
     try {
+      const emailAlready = await this.userRepository.findOne({
+        where: {
+          email: payload.email,
+        },
+      });
+      if (emailAlready) {
+        throw new Error('Email already exists');
+      }
       const hashedPassword = await this.hashPassword(
         payload.password,
         this.configService.get<number>('password.saltRound'),
