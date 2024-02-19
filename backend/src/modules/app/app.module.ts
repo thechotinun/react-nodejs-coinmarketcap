@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
-import configuration from '@config/configulation';
+import configuration from '@config/configuration';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import TypeOrmConfigService from '@config/typeorm/default';
 import { DataSource } from 'typeorm';
+import TypeOrmConfigService from '@config/typeorm/default';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionFilter } from '@exceptions/exception.filter';
-import { AppController } from '../../app.controller';
-import { AppService } from '../../app.service';
-import { UserModule } from '@modules/user/user.module';
 import { AuthModule } from '@modules/auth/auth.module';
+import { UserModule } from '@modules/user/user.module';
 
 @Module({
   imports: [
@@ -27,9 +25,8 @@ import { AuthModule } from '@modules/auth/auth.module';
     AuthModule,
     UserModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: ExceptionFilter,

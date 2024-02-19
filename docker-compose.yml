@@ -1,30 +1,54 @@
-version: "3.8"
+version: '3.9'
 services:
-    frontend:
-        build:
-            context: ./frontend
-        # ports:
-        #     - "5173:5173"
-        expose:
-            - "5173"
-        container_name: frontend
-        depends_on:
-            [backend]
-    backend:
-        build:
-            context: ./backend
-        # ports:
-        #     - "3100:3100"
-        expose:
-            - "3100"
-        container_name: backend
-        depends_on:
-            - nginx
-    nginx:
-        restart: always
-        image: nginx:latest
-        container_name: nginx
-        volumes:
-            - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
-        ports:
-            - "80:80"
+  db:
+    container_name: db_crypto
+    image: postgres:14.8-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    build:
+      context: ./backend
+    environment:
+      DATABASE_TYPE: ${DATABASE_TYPE}
+      DATABASE_HOST: db
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_SYNC: ${DATABASE_SYNC}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET}
+      JWT_ACCESS_EXPIRE: ${JWT_ACCESS_EXPIRE}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      JWT_REFRESH__EXPIRE: ${JWT_REFRESH__EXPIRE}
+      PER_PAGE: ${PER_PAGE}
+      PASSWORD_SALT_ROUNDS: ${PASSWORD_SALT_ROUNDS}
+    container_name: backend
+    expose:
+      - "3100"
+    depends_on:
+      - db
+  frontend:
+    build:
+        context: ./frontend
+    expose:
+      - "5173"
+    container_name: frontend
+    depends_on:
+      - backend
+  nginx:
+    restart: always
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
+    ports:
+      - 80:80
+volumes:
+  pgdata: {}
